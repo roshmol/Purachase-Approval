@@ -83,7 +83,8 @@ app_license = "mit"
 # ------------
 
 # before_install = "purchase_approval.install.before_install"
-# after_install = "purchase_approval.install.after_install"
+after_install = "purchase_approval.setup.install.after_install"
+
 
 # Uninstallation
 # ------------
