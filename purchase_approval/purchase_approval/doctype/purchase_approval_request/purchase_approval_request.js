@@ -48,21 +48,19 @@ frappe.ui.form.on('Purchase Approval Request', {
 });
 
 
-
-
 frappe.ui.form.on('Purchase Approval Request', {
     refresh(frm) {
-        frm.clear_custom_buttons();
-
+        // Approve button ONLY for Purchase Manager
         if (
-            !frm.is_new() &&
             frm.doc.status === 'Draft' &&
             frappe.user.has_role('Purchase Manager')
         ) {
             frm.add_custom_button(__('Approve'), () => {
                 frappe.call({
-                    method: 'purchase_approval.api.v1.material_request.approve_par',
-                    args: { name: frm.doc.name },
+                    method: 'purchase_approval.api.approve_par',
+                    args: {
+                        name: frm.doc.name
+                    },
                     callback() {
                         frm.reload_doc();
                     }
@@ -73,3 +71,20 @@ frappe.ui.form.on('Purchase Approval Request', {
 });
 
 
+frappe.ui.form.on('Purchase Approval Request', {
+    material_request(frm) {
+        if (!frm.doc.material_request) return;
+
+        frappe.call({
+            method: 'purchase_approval.api.v1.material_request.get_material_request_item_count',
+            args: {
+                mr: frm.doc.material_request
+            },
+            callback(r) {
+                if (r.message > 5) {
+                    frm.set_value('priority', 'High');
+                }
+            }
+        });
+    }
+});
