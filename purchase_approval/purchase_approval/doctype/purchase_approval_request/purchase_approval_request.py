@@ -11,11 +11,11 @@ class PurchaseApprovalRequest(Document):
 
 
 def get_permission_query_conditions(user):
-    # Purchase Managers can see all records
+    # Purchase Managers
     if "Purchase Manager" in frappe.get_roles(user):
         return None
 
-    # Normal users: own or assigned records only
+    # Normal users
     return f"""
         (
             `tabPurchase Approval Request`.requester = {frappe.db.escape(user)}
